@@ -1,0 +1,40 @@
+name: kumite_score
+description: "The Kumite Score app is a designed to assist in scoring Kumite matches in Karate competitions. It provides a user-friendly interface for referees and judges to input scores, track time, and manage match details efficiently."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  flutter_screenutil: ^5.9.3
+  audioplayers: ^5.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/sounds/
+
+  fonts:
+    - family: Inknut Antiqua
+      fonts:
+        - asset: assets/fonts/InknutAntiqua-Regular.ttf
+        - asset: assets/fonts/InknutAntiqua-Bold.ttf
+        - asset: assets/fonts/InknutAntiqua-Light.ttf
+        - asset: assets/fonts/InknutAntiqua-Medium.ttf
+        - asset: assets/fonts/InknutAntiqua-SemiBold.ttf
+        - asset: assets/fonts/InknutAntiqua-ExtraBold.ttf
+        - asset: assets/fonts/InknutAntiqua-Black.ttf
+          weight: 400
