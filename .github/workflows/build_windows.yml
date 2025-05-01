@@ -1,37 +1,39 @@
-name: Build Flutter Windows
+name: Flutter Windows Build
 
 on:
-  workflow_dispatch: # Executa manualmente no GitHub
   push:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  build-windows:
-    name: Build Windows App
+  build_windows:
+    name: Build Flutter Windows App
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.27.3"
-          channel: stable
+          flutter-version: "3.19.x"
+          cache: true
 
       - name: Enable Windows support
         run: flutter config --enable-windows-desktop
 
-      - name: Get dependencies
+      - name: Install dependencies
         run: flutter pub get
 
       - name: Build Windows
-        run: flutter build windows
+        run: flutter build windows --release
+
+      - name: Archive build
+        run: Compress-Archive -Path build\windows\runner\Release\* -DestinationPath KumiteScore-Windows.zip
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: Windows-Build
-          path: build/windows/runner/Release/
+          name: KumiteScore-Windows
+          path: KumiteScore-Windows.zip
