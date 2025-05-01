@@ -30,7 +30,14 @@ jobs:
         run: flutter build windows --release
 
       - name: Archive build
-        run: Compress-Archive -Path build\windows\runner\Release\* -DestinationPath KumiteScore-Windows.zip
+        shell: pwsh
+        run: |
+          if (Test-Path "build/windows/runner/Release") {
+            Compress-Archive -Path "build/windows/runner/Release/*" -DestinationPath "KumiteScore-Windows.zip"
+          } else {
+            Write-Host "❌ build/windows/runner/Release not found"
+            exit 1
+          }
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
