@@ -27,6 +27,7 @@ class AppButton extends StatelessWidget {
           label,
           textAlign: TextAlign.center,
           style: TextStyle(
+            fontFamily: 'Bebas Neue',
             fontSize: 32.sp,
             fontWeight: FontWeight.bold,
             color: Colors.black,

@@ -38,3 +38,7 @@ flutter:
         - asset: assets/fonts/InknutAntiqua-ExtraBold.ttf
         - asset: assets/fonts/InknutAntiqua-Black.ttf
           weight: 400
+    - family: Bebas Neue
+      fonts:
+        - asset: assets/fonts/Bebas_Neue/BebasNeue-Regular.ttf
+          weight: 400

@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
         splitScreenMode: true,
         builder: (_, child) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: 'Kumitê Score',
             theme: ThemeData(
               primarySwatch: Colors.blue,

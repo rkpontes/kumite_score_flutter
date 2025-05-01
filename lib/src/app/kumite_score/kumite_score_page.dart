@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kumite_score/src/components/app_button.dart';
 
+const int ippon = 2;
+const int wazaAri = 1;
+
 class KumiteScorePage extends StatefulWidget {
   const KumiteScorePage({super.key});
 
@@ -14,8 +17,10 @@ class KumiteScorePage extends StatefulWidget {
 
 class _KumiteScorePageState extends State<KumiteScorePage> {
   final AudioPlayer _audioPlayer = AudioPlayer();
+
   Duration _duration = const Duration(minutes: 5);
   bool _isRunning = false;
+  int _initialMinutes = 5;
   Timer? _timer;
 
   int akaScore = 0;
@@ -44,10 +49,30 @@ class _KumiteScorePageState extends State<KumiteScorePage> {
     setState(() => _isRunning = !_isRunning);
   }
 
+  void _setPoint(String player, int point) {
+    setState(() {
+      if (player == 'aka') {
+        akaScore += point;
+      } else if (player == 'shiro') {
+        shiroScore += point;
+      }
+    });
+  }
+
+  void _removePoint(String player, int point) {
+    setState(() {
+      if (player == 'aka') {
+        akaScore -= point;
+      } else if (player == 'shiro') {
+        shiroScore -= point;
+      }
+    });
+  }
+
   void _reset() {
     _timer?.cancel();
     setState(() {
-      _duration = const Duration(minutes: 5);
+      _duration = Duration(minutes: _initialMinutes);
       _isRunning = false;
       akaScore = 0;
       shiroScore = 0;
@@ -83,7 +108,7 @@ class _KumiteScorePageState extends State<KumiteScorePage> {
     );
   }
 
-  Row _buildBottomButtons(Size size) {
+  Widget _buildBottomButtons(Size size) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -136,7 +161,7 @@ class _KumiteScorePageState extends State<KumiteScorePage> {
               AppButton(
                 label: '-1',
                 width: 100.w,
-                onTap: _isRunning ? () => setState(() => akaScore -= 1) : null,
+                onTap: () => _removePoint('aka', 1),
               ),
             ],
           ),
@@ -149,20 +174,16 @@ class _KumiteScorePageState extends State<KumiteScorePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                'Timer',
-                style: TextStyle(
-                  fontSize: 32.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                '${_duration.inMinutes.remainder(60).toString().padLeft(2, '0')}:${_duration.inSeconds.remainder(60).toString().padLeft(2, '0')}',
-                style: TextStyle(
-                  fontSize: 64.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              GestureDetector(
+                onTap: _showTimePickerModal,
+                child: Text(
+                  '${_duration.inMinutes.remainder(60).toString().padLeft(2, '0')}:${_duration.inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                  style: TextStyle(
+                    fontFamily: 'Bebas Neue',
+                    fontSize: 80.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],
@@ -177,8 +198,7 @@ class _KumiteScorePageState extends State<KumiteScorePage> {
               AppButton(
                 label: '-1',
                 width: 100.w,
-                onTap:
-                    _isRunning ? () => setState(() => shiroScore -= 1) : null,
+                onTap: () => _removePoint('shiro', 1),
               ),
             ],
           ),
@@ -191,6 +211,7 @@ class _KumiteScorePageState extends State<KumiteScorePage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
           width: size.width * 0.3,
@@ -201,39 +222,32 @@ class _KumiteScorePageState extends State<KumiteScorePage> {
               AppButton(
                 label: 'IPPON',
                 width: 300.w,
-                onTap: _isRunning ? () => setState(() => akaScore += 3) : null,
+                onTap: () => _setPoint('aka', ippon),
               ),
               SizedBox(height: 15),
               AppButton(
                 label: 'WAZA-ARI',
                 width: 300.w,
-                onTap: _isRunning ? () => setState(() => akaScore += 2) : null,
+                onTap: () => _setPoint('aka', wazaAri),
               ),
             ],
           ),
         ),
         SizedBox(
           width: size.width * 0.4,
-          height: 200.h,
+          height: 300.h,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              FittedBox(
-                fit: BoxFit.contain,
-                child: Transform.translate(
-                  offset: Offset(0, -20.h),
-                  child: Transform.scale(
-                    scaleY: 1.5,
-                    child: Text(
-                      '$akaScore',
-                      style: TextStyle(
-                        fontSize: 150.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
+              Text(
+                '$akaScore'.padLeft(2, '0'),
+                textAlign: TextAlign.end,
+                style: TextStyle(
+                  fontFamily: 'Bebas Neue',
+                  fontSize: 180.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
               ),
               SizedBox(width: 20.w),
@@ -248,21 +262,14 @@ class _KumiteScorePageState extends State<KumiteScorePage> {
                 ),
               ),
               SizedBox(width: 20.w),
-              FittedBox(
-                fit: BoxFit.contain,
-                child: Transform.translate(
-                  offset: Offset(0, -20.h),
-                  child: Transform.scale(
-                    scaleY: 1.5,
-                    child: Text(
-                      '$shiroScore',
-                      style: TextStyle(
-                        fontSize: 150.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
+              Text(
+                '$shiroScore'.padLeft(2, '0'),
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  fontFamily: 'Bebas Neue',
+                  fontSize: 180.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
               ),
             ],
@@ -277,15 +284,13 @@ class _KumiteScorePageState extends State<KumiteScorePage> {
               AppButton(
                 label: 'IPPON',
                 width: 300.w,
-                onTap:
-                    _isRunning ? () => setState(() => shiroScore += 3) : null,
+                onTap: () => _setPoint('shiro', ippon),
               ),
               SizedBox(height: 15),
               AppButton(
                 label: 'WAZA-ARI',
                 width: 300.w,
-                onTap:
-                    _isRunning ? () => setState(() => shiroScore += 2) : null,
+                onTap: () => _setPoint('shiro', wazaAri),
               ),
             ],
           ),
@@ -352,6 +357,47 @@ class _KumiteScorePageState extends State<KumiteScorePage> {
         Expanded(child: Container(color: Colors.red)),
         Expanded(child: Container(color: Colors.white)),
       ],
+    );
+  }
+
+  void _showTimePickerModal() {
+    int tempMinutes = _initialMinutes;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'Selecione os minutos',
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+          ),
+          content: DropdownButton<int>(
+            value: tempMinutes,
+            isExpanded: true,
+            items: List.generate(10, (index) => index + 1)
+                .map((min) => DropdownMenuItem(
+                      value: min,
+                      child: Text('$min minutos'),
+                    ))
+                .toList(),
+            onChanged: (value) {
+              if (value != null) {
+                setState(() {
+                  _initialMinutes = value;
+                  _duration = Duration(minutes: value);
+                });
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancelar'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
