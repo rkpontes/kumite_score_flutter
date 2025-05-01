@@ -32,10 +32,10 @@ jobs:
       - name: Archive build
         shell: pwsh
         run: |
-          if (Test-Path "build/windows/runner/Release") {
-            Compress-Archive -Path "build/windows/runner/Release/*" -DestinationPath "KumiteScore-Windows.zip"
+          if (Test-Path "build/windows/x64/runner/Release") {
+            Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath "KumiteScore-Windows.zip"
           } else {
-            Write-Host "❌ build/windows/runner/Release not found"
+            Write-Host "❌ build/windows/x64/runner/Release not found"
             exit 1
           }
 
